@@ -8,7 +8,7 @@ contract TransferPets is ERC1155, Ownable {
     uint256 tokenCounter;
 
     struct PuppyData {
-        uint256 priceEth;
+        uint256 priceWei;
         uint256[] transferWithIds;
     }
 
@@ -20,25 +20,36 @@ contract TransferPets is ERC1155, Ownable {
             "https://bafybeibwchbcw5jciwaugtk2tot2azuk4sydsfqmz45er5vxudc2faapce.ipfs.dweb.link/{id}.json"
         )
     {
-        // _mint(msg.sender, 1, 1, ""); // goldendoodle male
-        // _mint(msg.sender, 2, 1, ""); // goldendoodle female
-        // _mint(msg.sender, 3, 1, ""); // french bulldog male
-        // tokenCounter = 3;
-
-        uint256[] memory ids = new uint256[](3);
-        uint256[] memory amounts = new uint256[](3);
         tokenCounter = 1;
-        for (uint256 i = 0; i < 3; i++) {
-            ids[i] = tokenCounter++;
-            amounts[i] = 1;
-        }
-        _mintBatch(msg.sender, ids, amounts, "");
+        uint256[] memory transferWithIds1 = new uint256[](1);
+        transferWithIds1[0] = 2;
+        uint256[] memory transferWithIds2 = new uint256[](1);
+        transferWithIds1[0] = 1;
+        mintToOwner(10000000, transferWithIds1); // goldendoodle boy
+        mintToOwner(10000000, transferWithIds2); // goldendoodle girl
+        mintToOwner(10000000, new uint256[](0)); // french bulldog boy
     }
 
-    function mintToOwner() public onlyOwner returns (uint256) {
-        tokenCounter++;
-        _mint(msg.sender, tokenCounter, 1, "");
-        return tokenCounter;
+    function mintToOwner(uint256 _priceWei, uint256[] memory _transferWithIds)
+        public
+        onlyOwner
+        returns (uint256)
+    {
+        uint256 tokenId = tokenCounter++;
+        _mint(msg.sender, tokenId, 1, "");
+        puppyIdsToData[tokenId] = PuppyData({
+            priceWei: _priceWei,
+            transferWithIds: _transferWithIds
+        });
+        return tokenId;
+    }
+
+    function buyPuppy(uint256 _puppyId) public payable {
+        require(balanceOf(owner(), _puppyId) > 0, "This puppy is not in stock");
+        PuppyData memory puppyData = puppyIdsToData[_puppyId];
+        require(msg.value == puppyData.priceWei, "Incorrect balance");
+        // check brother and sister sold together
+        safeTransferFrom(owner(), msg.sender, _puppyId, 1, "");
     }
 
     // mint batch to owner?
