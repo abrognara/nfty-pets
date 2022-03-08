@@ -18,4 +18,10 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 module.exports = {
   solidity: "0.8.4",
+  networks: {
+    ropsten: {
+      url: 'https://eth-ropsten.alchemyapi.io/v2/_WsJ419e6ke1Kb8LUmBkYiVs09f_5rwv',
+      accounts: ['bf64fc3359334f42670c5835e8041053d835dfd60d8c0c87f46d9352086b59f0']
+    }
+  }
 };
