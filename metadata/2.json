@@ -1,0 +1,24 @@
+{
+    "name": "Lucy",
+    "description": "A goldendoodle female puppy that needs a new home",
+    "image": "ipfs://QmYSMGPbRr54sCKzvLo19jS3UgmWxhXDHwwHNg3mC62zHk?filename=goldendoodle-female.jpg",
+    "attributes": [
+        {
+            "display_type": "date", 
+            "trait_type": "birthday", 
+            "value": 1642191747
+        },
+        {
+            "trait_type": "breed",
+            "value": "goldendoodle"
+        },
+        {
+            "trait_type": "sex",
+            "value": "female"
+        },
+        {
+            "trait_type": "color",
+            "value": "tan"
+        }
+    ]
+}

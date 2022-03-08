@@ -1,0 +1,24 @@
+{
+    "name": "Trevor",
+    "description": "A french bulldog male puppy that needs a new home",
+    "image": "ipfs://QmVVDyq7Y857RxhsJgZEhFbfEfP7YyMxfgePtBw11xczwp?filename=french-bulldog-male.jpg",
+    "attributes": [
+        {
+            "display_type": "date", 
+            "trait_type": "birthday", 
+            "value": 1644092547
+        },
+        {
+            "trait_type": "breed",
+            "value": "french_bulldog"
+        },
+        {
+            "trait_type": "sex",
+            "value": "male"
+        },
+        {
+            "trait_type": "color",
+            "value": "gray"
+        }
+    ]
+}

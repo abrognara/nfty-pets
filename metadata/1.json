@@ -1,0 +1,24 @@
+{
+    "name": "Joey",
+    "description": "A goldendoodle male puppy that needs a new home",
+    "image": "ipfs://QmRdzjpPGcuUksKUzr3rDk9Np4y1PnwqrWFhwUE5wkYRHm?filename=goldendoodle-male.jpg",
+    "attributes": [
+        {
+            "display_type": "date", 
+            "trait_type": "birthday", 
+            "value": 1642190007
+        },
+        {
+            "trait_type": "breed",
+            "value": "goldendoodle"
+        },
+        {
+            "trait_type": "sex",
+            "value": "male"
+        },
+        {
+            "trait_type": "color",
+            "value": "tan"
+        }
+    ]
+}

@@ -21,10 +21,17 @@ contract TransferPets is ERC1155 {
 
     function buyPuppies(uint256[] calldata _ids, uint256[] calldata _amounts)
         public
+        payable
     {
+        // * check buyer has enough eth to purchase (msg.value)
+        uint256 totalPriceEth;
+        for (uint256 i = 0; i < _ids.length; i++) {
+            PuppyData memory puppyData = puppyIdsToData[_ids[i]];
+            totalPriceEth += puppyData.priceEth;
+        }
+        require(msg.value >= totalPriceEth, "Not enough eth sent");
         // * check brother and sister are sold together
-        // * check buyer has enough eth to purchase (msg.amount)
-        // * transfer eth from buyer to contract
+        // * transfer eth from buyer to contract (or directly to owner?)
         // * transfer the NFT to msg.sender
         safeBatchTransferFrom(owner, msg.sender, _ids, _amounts, "");
     }
