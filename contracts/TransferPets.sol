@@ -20,11 +20,19 @@ contract TransferPets is ERC1155, Ownable {
             "https://bafybeibwchbcw5jciwaugtk2tot2azuk4sydsfqmz45er5vxudc2faapce.ipfs.dweb.link/{id}.json"
         )
     {
-        _mint(msg.sender, 1, 1, ""); // goldendoodle male
-        _mint(msg.sender, 2, 1, ""); // goldendoodle female
-        _mint(msg.sender, 3, 1, ""); // french bulldog male
-        tokenCounter = 3;
-        // _mintBatch(msg.sender, [1, 2, 3], [1, 1, 1], "");
+        // _mint(msg.sender, 1, 1, ""); // goldendoodle male
+        // _mint(msg.sender, 2, 1, ""); // goldendoodle female
+        // _mint(msg.sender, 3, 1, ""); // french bulldog male
+        // tokenCounter = 3;
+
+        uint256[] memory ids = new uint256[](3);
+        uint256[] memory amounts = new uint256[](3);
+        tokenCounter = 1;
+        for (uint256 i = 0; i < 3; i++) {
+            ids[i] = tokenCounter++;
+            amounts[i] = 1;
+        }
+        _mintBatch(msg.sender, ids, amounts, "");
     }
 
     function mintToOwner() public onlyOwner returns (uint256) {
