@@ -2,9 +2,10 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract TransferPets is ERC1155 {
-    address owner;
+contract TransferPets is ERC1155, Ownable {
+    uint256 tokenCounter;
 
     struct PuppyData {
         uint256 priceEth;
@@ -13,11 +14,26 @@ contract TransferPets is ERC1155 {
 
     mapping(uint256 => PuppyData) puppyIdsToData;
 
-    constructor() public ERC1155("<ipfs uri here>") {
-        owner = msg.sender;
-        // _mint(msg.sender, puppyId, 1, "");
-        // mint all in constructor or make a minting function for new puppies?
+    constructor()
+        public
+        ERC1155(
+            "https://bafybeibwchbcw5jciwaugtk2tot2azuk4sydsfqmz45er5vxudc2faapce.ipfs.dweb.link/{id}.json"
+        )
+    {
+        _mint(msg.sender, 1, 1, ""); // goldendoodle male
+        _mint(msg.sender, 2, 1, ""); // goldendoodle female
+        _mint(msg.sender, 3, 1, ""); // french bulldog male
+        tokenCounter = 3;
+        // _mintBatch(msg.sender, [1, 2, 3], [1, 1, 1], "");
     }
+
+    function mintToOwner() public onlyOwner returns (uint256) {
+        tokenCounter++;
+        _mint(msg.sender, tokenCounter, 1, "");
+        return tokenCounter;
+    }
+
+    // mint batch to owner?
 
     function buyPuppies(uint256[] calldata _ids, uint256[] calldata _amounts)
         public
