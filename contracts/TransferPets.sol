@@ -12,7 +12,16 @@ contract TransferPets is ERC1155, Ownable {
         uint256[] transferWithIds;
     }
 
+    struct PuppyMarketItem {
+        address payable seller;
+        address payable owner;
+        bool sold;
+        uint256 price;
+        uint256[] transferWithIds;
+    }
+
     mapping(uint256 => PuppyData) puppyIdsToData;
+    mapping(uint256 => PuppyMarketItem) tokenIdToMarketItem;
 
     constructor()
         public
@@ -42,6 +51,21 @@ contract TransferPets is ERC1155, Ownable {
             transferWithIds: _transferWithIds
         });
         return tokenId;
+    }
+
+    function createPuppyListing(
+        address _nftContract,
+        uint256 _tokenId,
+        uint256 _price,
+        uint256[] memory _transferWithIds
+    ) public {
+        tokenIdToMarketItem[_tokenId] = PuppyMarketItem({
+            seller: payable(msg.sender),
+            owner: payable(0),
+            price: _price,
+            sold: false,
+            transferWithIds: _transferWithIds
+        });
     }
 
     function buyPuppy(uint256 _puppyId) public payable {
