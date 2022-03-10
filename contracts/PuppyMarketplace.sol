@@ -60,4 +60,10 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
         tokenIdToMarketItem[_tokenId].owner = payable(msg.sender);
         tokenIdToMarketItem[_tokenId].sold = true;
     }
+
+    // get puppy listings
+    // get sold vs in-stock puppies
+    // batch listing
+    // batch selling
+    // puppies must be sold together logic
 }
