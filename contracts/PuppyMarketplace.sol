@@ -17,10 +17,11 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
         address payable owner;
         bool sold;
         uint256 price;
-        uint256[] transferWithIds;
     }
 
     mapping(uint256 => PuppyMarketItem) tokenIdToMarketItem;
+
+    mapping(uint256 => uint256[]) transferWithIds;
 
     function createPuppyListing(
         uint256 _tokenId,
@@ -32,9 +33,12 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
             seller: payable(msg.sender), // or owner()
             owner: payable(0),
             sold: false,
-            price: _price,
-            transferWithIds: _transferWithIds
+            price: _price
         });
+
+        // load transferWithIds with ids
+        transferWithIds[_tokenId] = _transferWithIds;
+
         ERC1155(_nftContractAddress).safeTransferFrom(
             msg.sender,
             address(this),
@@ -55,6 +59,8 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
             "Amount sent does not match the listing price. Please resend the correct amount."
         );
 
+        require(transferWithIds[_tokenId].length == 0, "This puppy must be purchased with 1 or more other puppies.");
+
         tokenIdToMarketItem[_tokenId].seller.transfer(msg.value);
         ERC1155(_nftContractAddress).safeTransferFrom(
             address(this),
@@ -66,6 +72,52 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
         tokenIdToMarketItem[_tokenId].owner = payable(msg.sender);
         tokenIdToMarketItem[_tokenId].sold = true;
         _itemsSold.increment();
+    }
+
+    function sellPuppies(uint256[] memory _tokenIds, address _nftContractAddress) public payable {
+        uint256[] memory amounts = new uint256[](_tokenIds.length);
+        uint256 totalPrice;
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            totalPrice += tokenIdToMarketItem[_tokenIds[i]].price;
+            amounts[i] = 1;
+        }
+        require(
+            msg.value == totalPrice,
+            "Amount sent does not match the total price of all listings. Please resend the correct amount."
+        );
+        require(_checkTokensTransferredTogether(_tokenIds), "One or more puppies must be purchased with other puppies.");
+
+        ERC1155(_nftContractAddress).safeBatchTransferFrom(address(this), msg.sender, _tokenIds, amounts, "");
+
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            // to handle different sellers, transfer tokens to each seller (future consideration)
+            tokenIdToMarketItem[_tokenIds[i]].seller.transfer(tokenIdToMarketItem[_tokenIds[i]].price);
+            tokenIdToMarketItem[_tokenIds[i]].owner = payable(msg.sender);
+            tokenIdToMarketItem[_tokenIds[i]].sold = true;
+            _itemsSold.increment();
+        }
+    }
+
+    function _checkTokensTransferredTogether(uint256[] memory _tokenIds) private view returns (bool) {
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            // if tokenId has no transfer req's, skip
+            if (transferWithIds[_tokenIds[i]].length == 0) continue;
+            // get transfer req's (ids) and make sure they exist in _tokenId's
+            uint256[] memory ids = transferWithIds[_tokenIds[i]];
+            for (uint256 j = 0; j < ids.length; j++) {
+                if (!_arrayContains(ids[j], _tokenIds)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    function _arrayContains(uint256 value, uint256[] memory array) private pure returns (bool) {
+        for (uint256 i = 0; i < array.length; i++) {
+            if (array[i] == value) return true;
+        }
+        return false;
     }
 
     // get puppy listings
