@@ -5,8 +5,13 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract PuppyMarketplace is Ownable, ERC1155Holder {
+    using Counters for Counters.Counter;
+    Counters.Counter private _itemsListed;
+    Counters.Counter private _itemsSold;
+
     struct PuppyMarketItem {
         address payable seller;
         address payable owner;
@@ -37,6 +42,7 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
             1,
             ""
         );
+        _itemsListed.increment();
     }
 
     function sellPuppy(uint256 _tokenId, address _nftContractAddress)
@@ -59,6 +65,7 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
         );
         tokenIdToMarketItem[_tokenId].owner = payable(msg.sender);
         tokenIdToMarketItem[_tokenId].sold = true;
+        _itemsSold.increment();
     }
 
     // get puppy listings
