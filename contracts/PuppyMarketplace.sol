@@ -49,6 +49,10 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
         _itemsListed.increment();
     }
 
+    function createPuppyListingBatch(uint256[] _tokenIds, uint256[] _prices, uint256[][] memory _transferWithIds, address _nftContractAddress) public onlyOwner {
+        // TODO implement
+    }
+
     function sellPuppy(uint256 _tokenId, address _nftContractAddress)
         public
         payable
@@ -96,6 +100,15 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
             tokenIdToMarketItem[_tokenIds[i]].sold = true;
             _itemsSold.increment();
         }
+    }
+
+    function getPuppyIdsSoldTogether(uint256 _tokenId) public view returns (uint256[] memory) {
+        return transferWithIds[_tokenId];
+    }
+
+    function setPuppyIdsSoldTogether(uint256 _tokenId, uint256[] memory _transferWithIds) public {
+        require(_tokenId <= _itemsListed.current(), "Cannot modify a token that doesn't yet exist");
+        transferWithIds[_tokenId] = _transferWithIds;
     }
 
     function _checkTokensTransferredTogether(uint256[] memory _tokenIds) private view returns (bool) {
