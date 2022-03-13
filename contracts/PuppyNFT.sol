@@ -26,4 +26,17 @@ contract PuppyNFT is ERC1155, Ownable {
         setApprovalForAll(marketplaceAddress, true);
         return tokenId;
     }
+
+    function batchMintToOwner(uint256 _nTokens) public onlyOwner returns (uint256[] memory) {
+        uint256[] memory ids = new uint256[](_nTokens);
+        uint256[] memory amounts = new uint256[](_nTokens);
+        for (uint256 i = 0; i < _nTokens; i++) {
+            _tokenIds.increment();
+            uint256 curId = _tokenIds.current();
+            ids[i] = curId;
+            amounts[i] = 1;
+        }
+        _mintBatch(msg.sender, ids, amounts, "");
+        return ids;
+    }
 }
