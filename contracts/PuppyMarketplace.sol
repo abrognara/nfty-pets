@@ -49,8 +49,20 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
         _itemsListed.increment();
     }
 
-    function createPuppyListingBatch(uint256[] _tokenIds, uint256[] _prices, uint256[][] memory _transferWithIds, address _nftContractAddress) public onlyOwner {
-        // TODO implement
+    function createPuppyListingBatch(uint256[] memory _tokenIds, uint256[] memory _prices, uint256[][] memory _transferWithIds, address _nftContractAddress) public onlyOwner {
+        uint256[] memory amounts = new uint256[](_tokenIds.length);
+        for (uint256 i = 0; i < _tokenIds.length; i++) {
+            tokenIdToMarketItem[_tokenIds[i]] = PuppyMarketItem({
+                seller: payable(msg.sender), // or owner()
+                owner: payable(0),
+                sold: false,
+                price: _prices[i]
+            });
+            transferWithIds[_tokenIds[i]] = _transferWithIds[i];
+            amounts[i] = 1;
+            _itemsListed.increment();
+        }
+        ERC1155(_nftContractAddress).safeBatchTransferFrom(msg.sender, address(this), _tokenIds, amounts, "");
     }
 
     function sellPuppy(uint256 _tokenId, address _nftContractAddress)
@@ -78,7 +90,7 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
         _itemsSold.increment();
     }
 
-    function sellPuppies(uint256[] memory _tokenIds, address _nftContractAddress) public payable {
+    function sellPuppiesBatch(uint256[] memory _tokenIds, address _nftContractAddress) public payable {
         uint256[] memory amounts = new uint256[](_tokenIds.length);
         uint256 totalPrice;
         for (uint256 i = 0; i < _tokenIds.length; i++) {
@@ -133,9 +145,4 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
         return false;
     }
 
-    // get puppy listings
-    // get sold vs in-stock puppies
-    // batch listing
-    // batch selling
-    // puppies must be sold together logic
 }
