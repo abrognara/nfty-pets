@@ -7,7 +7,7 @@ First I uploaded assets (image, metadata) to IPFS for each puppy. I followed Ope
 - Lucy, goldendoodle girl, id = 2
 - Trevor, french bulldog boy, id = 3
 
-Next, the owner can mint three NFTs to represent each puppy. I decided to restrict minting abilities to only the owner of the pet store so they could control minting based on the supply of puppies. Selling the NFTs is handled by the marketplace contract, which will keep track of NFT listings and facilitate the exchange of eth for assets. I also restricted listing NFTs to only the owner so that they can control what puppies are listed based on their supply and availabiliy. Finally, any buyer can buy the NFTs from the contract.
+Next, the owner would mint three NFTs to represent each puppy. I decided to restrict minting abilities to only the owner of the pet store so they could control minting based on the supply of puppies. Selling the NFTs is handled by the marketplace contract, which will keep track of NFT listings and facilitate the exchange of eth for the assets. I also restricted listing NFTs to only the owner so that they can control what puppies are listed based on their supply and availabiliy.
 
 ## Deployment Steps
   - owner, 0x1efe1b27ddb1ef694f2a6760cab8dcc3d2e74309
