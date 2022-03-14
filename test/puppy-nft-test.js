@@ -17,9 +17,10 @@ describe('PuppyNFT', () => {
         await puppyNFT.mintToOwner();
         expect(await puppyNFT.balanceOf(owner.address, 1)).to.equal(1);
 
-        await puppyNFT.mintToOwner();
-        const balances = await puppyNFT.balanceOfBatch([owner.address, owner.address], [2, 3]);
+        await puppyNFT.batchMintToOwner(2);
+        const balances = await puppyNFT.balanceOfBatch([owner.address, owner.address, owner.address], [2, 3, 4]);
         expect(balances[0]).to.equal(1);
-        expect(balances[1]).to.equal(0);
+        expect(balances[1]).to.equal(1);
+        expect(balances[2]).to.equal(0);
     });
 });

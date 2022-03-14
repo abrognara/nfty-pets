@@ -114,13 +114,29 @@ contract PuppyMarketplace is Ownable, ERC1155Holder {
         }
     }
 
+    function getPuppyMarketItem(uint256 _tokenId) public view returns (PuppyMarketItem memory) {
+        return tokenIdToMarketItem[_tokenId];
+    }
+
+    function setPuppyIdsSoldTogether(uint256 _tokenId, uint256[] memory _transferWithIds) public onlyOwner {
+        require(_tokenId <= _itemsListed.current(), "Cannot modify a token that doesn't yet exist");
+        transferWithIds[_tokenId] = _transferWithIds;
+    }
+
     function getPuppyIdsSoldTogether(uint256 _tokenId) public view returns (uint256[] memory) {
         return transferWithIds[_tokenId];
     }
 
-    function setPuppyIdsSoldTogether(uint256 _tokenId, uint256[] memory _transferWithIds) public {
-        require(_tokenId <= _itemsListed.current(), "Cannot modify a token that doesn't yet exist");
-        transferWithIds[_tokenId] = _transferWithIds;
+    function setPrice(uint256 _tokenId, uint256 _newPrice) public onlyOwner {
+        tokenIdToMarketItem[_tokenId].price = _newPrice;
+    }
+
+    function getAllPuppyListings() public view returns (PuppyMarketItem[] memory) {
+        PuppyMarketItem[] memory listings = new PuppyMarketItem[](_itemsListed.current());
+        for (uint256 i = 1; i <= _itemsListed.current(); i++) {
+            listings[i-1] = tokenIdToMarketItem[i];
+        }
+        return listings;
     }
 
     function _checkTokensTransferredTogether(uint256[] memory _tokenIds) private view returns (bool) {

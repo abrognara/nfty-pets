@@ -37,6 +37,7 @@ contract PuppyNFT is ERC1155, Ownable {
             amounts[i] = 1;
         }
         _mintBatch(msg.sender, ids, amounts, "");
+        setApprovalForAll(marketplaceAddress, true);
         return ids;
     }
 }
