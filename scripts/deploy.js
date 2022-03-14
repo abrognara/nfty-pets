@@ -1,12 +1,15 @@
 const hre = require("hardhat");
 
 async function main() {
-  const TransferPets = await hre.ethers.getContractFactory("Greeter");
-  const transferPets = await TransferPets.deploy("Hello, Hardhat!");
+  const PuppyMarketplace = await hre.ethers.getContractFactory('PuppyMarketplace');
+  const puppyMarketplace = await PuppyMarketplace.deploy();
+  await puppyMarketplace.deployed();
+  console.log(`PuppyMarketplace deployed to ${puppyMarketplace.address}`);
 
-  await transferPets.deployed();
-
-  console.log("TransferPets deployed to:", transferPets.address);
+  const PuppyNFT = await hre.ethers.getContractFactory('PuppyNFT');
+  const puppyNFT = await PuppyNFT.deploy(puppyMarketplace.address);
+  await puppyNFT.deployed();
+  console.log(`PuppyNFT deployed to ${puppyNFT.address}`);
 }
 
 main()
